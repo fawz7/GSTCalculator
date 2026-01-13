@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional GST Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .calculator {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .display {
+            background: #2c3e50;
+            color: white;
+            font-size: 32px;
+            font-weight: 300;
+            text-align: right;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            overflow: hidden;
+            word-break: break-all;
+        }
+
+        .gst-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .gst-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 8px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .gst-btn:hover {
+            background: #2980b9;
+            transform: translateY(-1px);
+        }
+
+        .gst-btn:active {
+            transform: translateY(0);
+        }
+
+        .memory-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .memory-btn {
+            background: #95a5a6;
+            color: white;
+            border: none;
+            padding: 12px 8px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .memory-btn:hover {
+            background: #7f8c8d;
+        }
+
+        .main-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .btn {
+            border: none;
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-height: 60px;
+        }
+
+        .btn-number {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        .btn-number:hover {
+            background: #bdc3c7;
+        }
+
+        .btn-operator {
+            background: #e67e22;
+            color: white;
+        }
+
+        .btn-operator:hover {
+            background: #d35400;
+        }
+
+        .btn-equals {
+            background: #27ae60;
+            color: white;
+            grid-column: span 2;
+        }
+
+        .btn-equals:hover {
+            background: #229954;
+        }
+
+        .btn-clear {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-clear:hover {
+            background: #c0392b;
+        }
+
+        .btn-zero {
+            grid-column: span 2;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
+        .gst-indicator {
+            background: #3498db;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 480px) {
+            .calculator {
+                padding: 20px;
+            }
+            
+            .display {
+                font-size: 28px;
+                padding: 15px;
+            }
+            
+            .btn {
+                padding: 15px;
+                font-size: 18px;
+            }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="calculator">
+        <div class="header">
+            <h1>GST Calculator Pro</h1>
+            <p>Professional Business Calculator</p>
+        </div>
+
+        <div class="status-bar">
+            <span id="memoryStatus">M: 0</span>
+            <span id="gstStatus">GST: 18%</span>
+        </div>
+
+        <div class="display" id="display">0</div>
+
+        <!-- GST Quick Buttons -->
+        <div class="gst-section">
+            <button class="gst-btn" onclick="quickGst(3, true)">+3%</button>
+            <button class="gst-btn" onclick="quickGst(5, true)">+5%</button>
+            <button class="gst-btn" onclick="quickGst(12, true)">+12%</button>
+            <button class="gst-btn" onclick="quickGst(18, true)">+18%</button>
+            <button class="gst-btn" onclick="quickGst(3, false)">-3%</button>
+            <button class="gst-btn" onclick="quickGst(5, false)">-5%</button>
+            <button class="gst-btn" onclick="quickGst(12, false)">-12%</button>
+            <button class="gst-btn" onclick="quickGst(18, false)">-18%</button>
+        </div>
+
+        <!-- Memory Functions -->
+        <div class="memory-section">
+            <button class="memory-btn" onclick="memoryClear()">MC</button>
+            <button class="memory-btn" onclick="memoryRecall()">MR</button>
+            <button class="memory-btn" onclick="memoryAdd()">M+</button>
+            <button class="memory-btn" onclick="memorySubtract()">M-</button>
+        </div>
+
+        <!-- Main Calculator Buttons -->
+        <div class="main-buttons">
+            <button class="btn btn-clear" onclick="clearAll()">AC</button>
+            <button class="btn btn-clear" onclick="clearEntry()">CE</button>
+            <button class="btn btn-operator" onclick="percentage()">%</button>
+            <button class="btn btn-operator" onclick="appendOperator('/')">÷</button>
+            
+            <button class="btn btn-number" onclick="appendNumber('7')">7</button>
+            <button class="btn btn-number" onclick="appendNumber('8')">8</button>
+            <button class="btn btn-number" onclick="appendNumber('9')">9</button>
+            <button class="btn btn-operator" onclick="appendOperator('×')">×</button>
+            
+            <button class="btn btn-number" onclick="appendNumber('4')">4</button>
+            <button class="btn btn-number" onclick="appendNumber('5')">5</button>
+            <button class="btn btn-number" onclick="appendNumber('6')">6</button>
+            <button class="btn btn-operator" onclick="appendOperator('-')">-</button>
+            
+            <button class="btn btn-number" onclick="appendNumber('1')">1</button>
+            <button class="btn btn-number" onclick="appendNumber('2')">2</button>
+            <button class="btn btn-number" onclick="appendNumber('3')">3</button>
+            <button class="btn btn-operator" onclick="appendOperator('+')">+</button>
+            
+            <button class="btn btn-number btn-zero" onclick="appendNumber('0')">0</button>
+            <button class="btn btn-number" onclick="appendDecimal()">.</button>
+            <button class="btn btn-equals" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        class GSTCalculator {
+            constructor() {
+                this.display = document.getElementById('display');
+                this.currentValue = '0';
+                this.previousValue = '';
+                this.operator = '';
+                this.waitingForOperand = false;
+                this.memory = 0;
+                this.lastGstRate = 18;
+                this.setupKeyboard();
+                this.updateDisplay();
+            }
+
+            updateDisplay() {
+                this.display.textContent = this.formatNumber(this.currentValue);
+                document.getElementById('memoryStatus').textContent = `M: ${this.memory}`;
+                document.getElementById('gstStatus').textContent = `GST: ${this.lastGstRate}%`;
+            }
+
+            formatNumber(num) {
+                if (num.length > 12) {
+                    return parseFloat(num).toExponential(6);
+                }
+                return num;
+            }
+
+            appendNumber(num) {
+                if (this.waitingForOperand) {
+                    this.currentValue = num;
+                    this.waitingForOperand = false;
+                } else {
+                    this.currentValue = this.currentValue === '0' ? num : this.currentValue + num;
+                }
+                this.updateDisplay();
+            }
+
+            appendDecimal() {
+                if (this.waitingForOperand) {
+                    this.currentValue = '0.';
+                    this.waitingForOperand = false;
+                } else if (this.currentValue.indexOf('.') === -1) {
+                    this.currentValue += '.';
+                }
+                this.updateDisplay();
+            }
+
+            appendOperator(op) {
+                if (this.waitingForOperand) return;
+                
+                if (this.operator && !this.waitingForOperand) {
+                    this.calculate();
+                }
+                
+                this.previousValue = this.currentValue;
+                this.operator = op;
+                this.waitingForOperand = true;
+            }
+
+            calculate() {
+                if (!this.operator || this.waitingForOperand) return;
+                
+                const prev = parseFloat(this.previousValue);
+                const current = parseFloat(this.currentValue);
+                let result;
+
+                switch (this.operator) {
+                    case '+':
+                        result = prev + current;
+                        break;
+                    case '-':
+                        result = prev - current;
+                        break;
+                    case '×':
+                        result = prev * current;
+                        break;
+                    case '/':
+                        result = current !== 0 ? prev / current : 0;
+                        break;
+                    default:
+                        return;
+                }
+
+                this.currentValue = result.toString();
+                this.operator = '';
+                this.waitingForOperand = true;
+                this.updateDisplay();
+            }
+
+            quickGst(rate, add) {
+                const current = parseFloat(this.currentValue);
+                let result;
+                
+                if (add) {
+                    result = current * (1 + rate / 100);
+                } else {
+                    result = current / (1 + rate / 100);
+                }
+                
+                this.currentValue = result.toFixed(2).toString();
+                this.lastGstRate = rate;
+                this.waitingForOperand = true;
+                this.updateDisplay();
+            }
+
+            percentage() {
+                const current = parseFloat(this.currentValue);
+                this.currentValue = (current / 100).toString();
+                this.updateDisplay();
+            }
+
+            clearAll() {
+                this.currentValue = '0';
+                this.previousValue = '';
+                this.operator = '';
+                this.waitingForOperand = false;
+                this.updateDisplay();
+            }
+
+            clearEntry() {
+                this.currentValue = '0';
+                this.updateDisplay();
+            }
+
+            memoryClear() {
+                this.memory = 0;
+                this.updateDisplay();
+            }
+
+            memoryRecall() {
+                this.currentValue = this.memory.toString();
+                this.waitingForOperand = true;
+                this.updateDisplay();
+            }
+
+            memoryAdd() {
+                this.memory += parseFloat(this.currentValue);
+                this.updateDisplay();
+            }
+
+            memorySubtract() {
+                this.memory -= parseFloat(this.currentValue);
+                this.updateDisplay();
+            }
+
+            setupKeyboard() {
+                document.addEventListener('keydown', (e) => {
+                    if (e.key >= '0' && e.key <= '9') {
+                        this.appendNumber(e.key);
+                    } else if (e.key === '.') {
+                        this.appendDecimal();
+                    } else if (e.key === '+' || e.key === '-') {
+                        this.appendOperator(e.key);
+                    } else if (e.key === '*') {
+                        this.appendOperator('×');
+                    } else if (e.key === '/') {
+                        e.preventDefault();
+                        this.appendOperator('/');
+                    } else if (e.key === 'Enter' || e.key === '=') {
+                        e.preventDefault();
+                        this.calculate();
+                    } else if (e.key === 'Escape') {
+                        this.clearAll();
+                    } else if (e.key === 'Backspace') {
+                        this.clearEntry();
+                    }
+                });
+            }
+        }
+
+        // Initialize calculator
+        const calc = new GSTCalculator();
+
+        // Global functions for HTML buttons
+        function appendNumber(num) { calc.appendNumber(num); }
+        function appendOperator(op) { calc.appendOperator(op); }
+        function appendDecimal() { calc.appendDecimal(); }
+        function calculate() { calc.calculate(); }
+        function clearAll() { calc.clearAll(); }
+        function clearEntry() { calc.clearEntry(); }
+        function percentage() { calc.percentage(); }
+        function quickGst(rate, add) { calc.quickGst(rate, add); }
+        function memoryClear() { calc.memoryClear(); }
+        function memoryRecall() { calc.memoryRecall(); }
+        function memoryAdd() { calc.memoryAdd(); }
+        function memorySubtract() { calc.memorySubtract(); }
+    </script>
+</body>
+</html>
